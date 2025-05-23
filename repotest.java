@@ -8,5 +8,7 @@ public class repotest{
 		con.println("YAY cpt");
 		con.println("I am so hungry right now");
 		con.println("I want the new destined rivals etb");
+		con.println("but the box is so expensive");
+		con.println("im real sad abt it");
 	}
 }
