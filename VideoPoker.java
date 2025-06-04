@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class VideoPoker{
 	public static void main (String[] args) {
-		Console con = new Console("Poker", 1400, 800);
+		Console con = new Console("Poker", 1392, 807);
 		BufferedImage imgpokermenu = con.loadImage("pokermenu.png");
 		 
 
