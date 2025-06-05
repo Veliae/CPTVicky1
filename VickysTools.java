@@ -45,7 +45,7 @@ public class VickysTools {
 		while (intBet <= 0 || intBet > intMoney) {
 			drawCenteredString(con, "Invalid bet. Try again.", 500);
 			intBet = con.readInt();
-		}
+	}
 
 		// Show result
 		con.clear();
@@ -55,19 +55,47 @@ public class VickysTools {
 		drawCenteredString(con, "Money left: $" + (intMoney - intBet), 420);
 
 		con.sleep(3000);
-		}
+	}
+
+		// These arrays will keep names and money
+		public static String[] arrNames = {"You", "Player 2", "Player 3", "Player 4"};
+		public static int[] arrMoney = {1000, 1000, 1000, 1000};
 
 		public static void showLeaderboard(Console con) {
-			// placeholder is okay
+			//clear screen
 			con.clear();
-			con.drawString("Leaderboard screen", 100, 100);
+			con.setDrawColor(Color.BLACK);
+			con.fillRect(0, 0, 1392, 807);
+			con.setDrawColor(Color.YELLOW);
+
+			Font titleFont = new Font("Arial", Font.BOLD, 36);
+			Font entryFont = new Font("Arial", Font.PLAIN, 28);
+
+			drawCenteredString(con, "LEADERBOARD", 150, titleFont);
+
+			for (int count = 0; count < arrNames.length; count++) {
+				String strEntry = arrNames[count] + ": $" + arrMoney[count];
+				drawCenteredString(con, strEntry, 220 + count * 50, entryFont);
 		}
 
-		public static void quitScreen(Console con) {
-			// placeholder is okay
+		con.sleep(3000);  // Let player view leaderboard
+	}
+
+		public static void updatePlayerMoney(int newMoney) {
+			arrMoney[0] = newMoney; // Update "You" (player at index 0)
+    }
+
+		  public static void quitScreen(Console con) {
 			con.clear();
-			con.drawString("Quit screen", 100, 100);
-			con.sleep(2000);
+			con.setDrawColor(Color.DARK_GRAY);
+			con.fillRect(0, 0, 1392, 807);
+			con.setDrawColor(Color.RED);
+
+			Font font = new Font("Arial", Font.BOLD, 36);
+			drawCenteredString(con, "Thanks for playing!", 300, font);
+			drawCenteredString(con, "Goodbye!", 360, font);
+
+			con.sleep(3000);
 			con.closeConsole();
-}
+		}
 }
