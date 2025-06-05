@@ -55,5 +55,19 @@ public class VickysTools {
 		drawCenteredString(con, "Money left: $" + (intMoney - intBet), 420);
 
 		con.sleep(3000);
+		}
+
+		public static void showLeaderboard(Console con) {
+			// placeholder is okay
+			con.clear();
+			con.drawString("Leaderboard screen", 100, 100);
+		}
+
+		public static void quitScreen(Console con) {
+			// placeholder is okay
+			con.clear();
+			con.drawString("Quit screen", 100, 100);
+			con.sleep(2000);
+			con.closeConsole();
 }
 }

@@ -17,15 +17,15 @@ public class VideoPoker {
         while (bolWaiting) {
             int intKey = con.getKey();
 
-            if (intKey == Console.KEY_ENTER) {
+            if (intKey == 10) {
 				// Game screen
                 VickysTools.playGame(con);  
                 bolWaiting = false;
-            } else if (intKey == Console.KEY_TAB) {
+            } else if (intKey == 9) {
 				// Leaderboard screen
                 VickysTools.showLeaderboard(con); 
                 bolWaiting = false;
-            } else if (intKey == Console.KEY_BACK_SPACE) {
+            } else if (intKey == 8) {
 				// Quit screen
                 VickysTools.quitScreen(con);  
                 bolWaiting = false;
