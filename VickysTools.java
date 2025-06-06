@@ -71,11 +71,11 @@ public class VickysTools {
 			Font titleFont = new Font("Arial", Font.BOLD, 36);
 			Font entryFont = new Font("Arial", Font.PLAIN, 28);
 
-			drawCenteredString(con, "LEADERBOARD", 150, titleFont);
+			drawCenteredString(con, "LEADERBOARD", 150);
 
 			for (int count = 0; count < arrNames.length; count++) {
 				String strEntry = arrNames[count] + ": $" + arrMoney[count];
-				drawCenteredString(con, strEntry, 220 + count * 50, entryFont);
+				drawCenteredString(con, strEntry, 220 + count * 50);
 		}
 
 		con.sleep(3000);  // Let player view leaderboard
@@ -92,8 +92,8 @@ public class VickysTools {
 			con.setDrawColor(Color.RED);
 
 			Font font = new Font("Arial", Font.BOLD, 36);
-			drawCenteredString(con, "Thanks for playing!", 300, font);
-			drawCenteredString(con, "Goodbye!", 360, font);
+			drawCenteredString(con, "Thanks for playing!", 300);
+			drawCenteredString(con, "Goodbye!", 360);
 
 			con.sleep(3000);
 			con.closeConsole();
