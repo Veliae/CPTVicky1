@@ -39,24 +39,24 @@ public class VideoPoker {
         con.setBackgroundColor(Color.BLACK);
         
         // Load and display menu image
-        //BufferedImage imgMenu = con.loadImage("pokermenu.png");
+        BufferedImage imgMenu = con.loadImage("pokermenu.png");
         // Center the image
-        //int intX = (1280 - imgMenu.getWidth()) / 2;
-        //int intY = (720 - imgMenu.getHeight()) / 2;
-        //con.drawImage(imgMenu, intX, intY);
+        int intX = (1280 - imgMenu.getWidth()) / 2;
+        int intY = (720 - imgMenu.getHeight()) / 2;
+        con.drawImage(imgMenu, intX, intY);
         
         // Add menu options text overlay
-        con.setDrawColor(Color.WHITE);
-        VickysTools.drawCenteredString(con, "WELCOME TO VIDEO POKER", 50);
+        // con.setDrawColor(Color.WHITE);
+        //VickysTools.drawCenteredString(con, "WELCOME TO VIDEO POKER", 50);
         
         // Menu options with key indicators
-        con.setDrawColor(Color.YELLOW);
-        VickysTools.drawCenteredString(con, "(ENTER) - Play Game", 500);
-        VickysTools.drawCenteredString(con, "(V) - View Leaderboard", 530);
-        VickysTools.drawCenteredString(con, "(H) - Recommended tut", 560);
-        VickysTools.drawCenteredString(con, "(BACKSPACE) - Quit", 590);
+        //con.setDrawColor(Color.YELLOW);
+        // VickysTools.drawCenteredString(con, "(ENTER) - Play Game", 500);
+        // VickysTools.drawCenteredString(con, "(V) - View Leaderboard", 530);
+        // VickysTools.drawCenteredString(con, "(H) - Recommended tut", 560);
+        // VickysTools.drawCenteredString(con, "(BACKSPACE) - Quit", 590);
         
-        con.repaint();
+       con.repaint();
         
         // Wait for valid key input
         while (true) {
