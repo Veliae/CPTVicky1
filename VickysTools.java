@@ -1,3 +1,8 @@
+// Vicky Wang
+// Poker Game CPT
+// Last update Thursday June 12
+// version 1.3.2
+
 import arc.*;
 import java.awt.Color;
 import java.awt.Font;
@@ -50,13 +55,13 @@ public class VickysTools {
 			}
 		}
 		// Bubble sort by random number from column 3 to shuffle
-		for (int i = 0; i < 51; i++) {
-			for (int v = 0; v < 51 - i; i++) {
-				if (intDeck[v][2] > intDeck[v + 1][2]) {
+		for (int v = 0; v < 51; v++) {
+			for (int i = 0; i < 51 - v; i++) {
+				if (intDeck[i][2] > intDeck[i + 1][2]) {
 					// Swap entire rows
-					int[] intTemp = intDeck[v];
-					intDeck[v] = intDeck[v + 1];
-					intDeck[v + 1] = intTemp;
+					int[] intTemp = intDeck[i];
+					intDeck[i] = intDeck[i + 1];
+					intDeck[i + 1] = intTemp;
 				}
 			}
 		}
@@ -561,7 +566,7 @@ public class VickysTools {
 		con.sleep(3000);
 	}
 	
-	// ==================== MENU TUT SCREEN ====================
+	// ==================== TUTORIAL SCREEN ====================
 	// Function: tells the player all the instructions for poker
 	// Input: Any key
 	// Output: Switches back to main menu screen
@@ -600,7 +605,10 @@ public class VickysTools {
 		// Wait for any key
 		con.getChar(); 
 	}
-
+	// ==================== SECRET MENU TUT SCREEN ====================
+		// Function: Tells the player a joke
+		// Input: Any key
+		// Output: Switches back to main menu screen
 
 	public static void showSecretMenu(Console con) {
 		con.clear();
@@ -617,13 +625,13 @@ public class VickysTools {
 
 		con.setDrawColor(Color.WHITE);
 		// Question line
-		drawCenteredString(con, "Whats the difference between a large pizza and a poker player?", 300);
+		drawCenteredString(con, "Whats the difference between a Large pizza and a Poker player?", 300);
 		con.repaint();
 		con.sleep(2000);
 		
 		con.setDrawColor(Color.CYAN);
 		// Answer line
-		drawCenteredString(con, "A large pizza can feed a family of 4 but a poker player can't ", 350);
+		drawCenteredString(con, "A Large pizza can feed a family of 4 but a Poker player can't ", 350);
 		con.repaint();
 		con.sleep(3000);
 		

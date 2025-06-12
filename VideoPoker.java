@@ -1,3 +1,8 @@
+// Vicky Wang
+// Poker Game CPT
+// Last update Thursday June 12
+// version 1.3.2
+
 import arc.*;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -56,7 +61,7 @@ public class VideoPoker {
         // VickysTools.drawCenteredString(con, "(H) - Recommended tut", 560);
         // VickysTools.drawCenteredString(con, "(BACKSPACE) - Quit", 590);
         
-       con.repaint();
+      con.repaint();
         
         // Wait for valid key input
         while (true) {
