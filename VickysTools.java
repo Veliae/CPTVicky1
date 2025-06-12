@@ -20,25 +20,15 @@ public class VickysTools {
 	public static int[] arrMoney = {1000, 1000, 1000, 1000};
 	
 	// ==================== UTILITY METHODS ====================
+	// Will be using this to keep everything centered 
 	public static void drawCenteredString(Console con, String strText, int intY) {
-		int intCharWidth = 20; 
+		// check how wide each character is
+		int intCharWidth = 14; 
+		// Calculates total width of the text
 		int intTextWidth = strText.length() * intCharWidth;
+		// Calculates where to start drawing to center the text by dividing by 2
 		int intX = (1280 - intTextWidth) / 2;
 		con.drawString(strText, intX, intY);
-	}
-	
-	// drawCenteredString with better width calculation
-	public static void drawCenteredStringPrecise(Console con, String strText, int intY) {
-		// Get actual font 
-		try {
-			FontMetrics fm = con.getDrawFontMetrics();
-			int intTextWidth = fm.stringWidth(strText);
-			int intX = (1280 - intTextWidth) / 2;
-			con.drawString(strText, intX, intY);
-		} catch (Exception e) {
-			// just incase font above fails
-			drawCenteredString(con, strText, intY);
-		}
 	}
 	
 	// ==================== CARD METHODS ====================
@@ -61,12 +51,12 @@ public class VickysTools {
 		}
 		// Bubble sort by random number from column 3 to shuffle
 		for (int i = 0; i < 51; i++) {
-			for (int j = 0; j < 51 - i; j++) {
-				if (intDeck[j][2] > intDeck[j + 1][2]) {
+			for (int v = 0; v < 51 - i; i++) {
+				if (intDeck[v][2] > intDeck[v + 1][2]) {
 					// Swap entire rows
-					int[] intTemp = intDeck[j];
-					intDeck[j] = intDeck[j + 1];
-					intDeck[j + 1] = intTemp;
+					int[] intTemp = intDeck[v];
+					intDeck[v] = intDeck[v + 1];
+					intDeck[v + 1] = intTemp;
 				}
 			}
 		}
@@ -131,9 +121,306 @@ public class VickysTools {
 		String strNumbers = "1     2     3     4     5";
 		drawCenteredString(con, strNumbers, intStartY + 60);
 		
-		// TODO: Show actual card values here
-		// For now, just placeholder
-		drawCenteredString(con, "[Cards will display here]", intStartY + 100);
+		// cards values and suits
+		String strCards = "";
+		for (int i = 0; i < 5; i++) {
+			String strCard = getCardValueString(intHand[i][0]) + getSuitString(intHand[i][1]);
+			strCards += strCard;
+			if (i < 4) {
+				// Space between the cards
+				strCards += "    "; 
+			}
+		}
+		drawCenteredString(con, strCards, intStartY + 100);
+	}
+		// Card swapping 
+		public static void swapCards(Console con, String strPlayerName, int intMoney, int intBet) {
+		con.clear();
+		con.setDrawColor(Color.BLACK);
+		con.fillRect(0, 0, 1280, 720);
+		con.setDrawColor(Color.WHITE);
+		con.repaint();
+		
+		drawCenteredString(con, "Player: " + strPlayerName, 100);
+		drawCenteredString(con, "Bet: $" + intBet + " | Money: $" + intMoney, 140);
+		
+		displayHand(con, 200);
+		
+		con.setDrawColor(Color.YELLOW);
+		drawCenteredString(con, "How many cards do you want to swap? (0-5)", 350);
+		con.repaint();
+		
+		int intCardsToSwap = con.readInt();
+		
+		// Validate input
+		while (intCardsToSwap < 0 || intCardsToSwap > 5) {
+			con.setDrawColor(Color.RED);
+			drawCenteredString(con, "Invalid! Must be 0-5. Try again:", 400);
+			con.repaint();
+			intCardsToSwap = con.readInt();
+		}
+		
+		// If player wants to swap cards
+		if (intCardsToSwap > 0) {
+			con.setDrawColor(Color.CYAN);
+			drawCenteredString(con, "Enter card positions to swap (1-5), one at a time:", 450);
+			con.repaint();
+			
+			boolean[] bolSwapCard = new boolean[5];
+			
+			// Get which cards to swap
+			for (int i = 0; i < intCardsToSwap; i++) {
+				drawCenteredString(con, "Card position " + (i + 1) + ":", 500 + i * 30);
+				con.repaint();
+				int intPosition = con.readInt();
+				
+				// Validate position
+				while (intPosition < 1 || intPosition > 5) {
+					con.setDrawColor(Color.RED);
+					drawCenteredString(con, "Invalid position! Must be 1-5:", 500 + i * 30);
+					con.repaint();
+					intPosition = con.readInt();
+				}
+				
+				bolSwapCard[intPosition - 1] = true; // Mark for swapping
+			}
+			
+			// Replace marked cards with new ones
+			replaceCards(bolSwapCard);
+		}
+	}
+
+	//  Replace cards from deck
+	public static void replaceCards(boolean[] bolSwapCard) {
+		// Start after the initial 5 cards
+		int intDeckIndex = 5; 
+		
+		for (int i = 0; i < 5; i++) {
+			if (bolSwapCard[i]) {
+				// Find next unused card in deck
+				while (intDeckIndex < 52 && bolUsedCards[intDeckIndex]) {
+					intDeckIndex++;
+				}
+				
+				if (intDeckIndex < 52) {
+					// Replace card
+					intHand[i][0] = intDeck[intDeckIndex][0]; // value
+					intHand[i][1] = intDeck[intDeckIndex][1]; // suit
+					bolUsedCards[intDeckIndex] = true; // Mark as used
+					intDeckIndex++;
+				}
+			}
+		}
+	}
+
+	//  Evaluate poker hand
+	public static String evaluateHand() {
+		// Count values and suits
+		int[] intValueCounts = new int[14]; // Index 0 unused, 1-13 for card values
+		int[] intSuitCounts = new int[5];   // Index 0 unused, 1-4 for suits
+		
+		// Count occurrences
+		for (int i = 0; i < 5; i++) {
+			intValueCounts[intHand[i][0]]++;
+			intSuitCounts[intHand[i][1]]++;
+		}
+		
+		// Check for flush (all same suit)
+		boolean bolFlush = false;
+		for (int i = 1; i <= 4; i++) {
+			if (intSuitCounts[i] == 5) {
+				bolFlush = true;
+				break;
+			}
+		}
+		
+		// Check for straight
+		boolean bolStraight = checkStraight(intValueCounts);
+		
+		// Check for royal flush (A, K, Q, J, 10 all same suit)
+		if (bolFlush && bolStraight && intValueCounts[1] == 1 && intValueCounts[10] == 1) {
+			return "Royal Flush";
+		}
+		
+		// Check for straight flush
+		if (bolFlush && bolStraight) {
+			return "Straight Flush";
+		}
+		
+		// Count pairs, three of a kind, four of a kind
+		int intPairs = 0;
+		int intThreeOfKind = 0;
+		int intFourOfKind = 0;
+		
+		for (int i = 1; i <= 13; i++) {
+			if (intValueCounts[i] == 2) {
+				intPairs++;
+			} else if (intValueCounts[i] == 3) {
+				intThreeOfKind++;
+			} else if (intValueCounts[i] == 4) {
+				intFourOfKind++;
+			}
+		}
+		
+		// Determine hand type
+		if (intFourOfKind == 1) {
+			return "Four of a Kind";
+		} else if (intThreeOfKind == 1 && intPairs == 1) {
+			return "Full House";
+		} else if (bolFlush) {
+			return "Flush";
+		} else if (bolStraight) {
+			return "Straight";
+		} else if (intThreeOfKind == 1) {
+			return "Three of a Kind";
+		} else if (intPairs == 2) {
+			return "Two Pair";
+		} else if (intPairs == 1) {
+			// Check if it's Jacks or better
+			for (int i = 11; i <= 13; i++) { // J, Q, K
+				if (intValueCounts[i] == 2) {
+					return "Pair of Jacks or Better";
+				}
+			}
+			if (intValueCounts[1] == 2) { // Aces
+				return "Pair of Jacks or Better";
+			}
+			return "Low Pair";
+		} else {
+			return "High Card";
+		}
+	}
+
+	//  Check for straight
+	public static boolean checkStraight(int[] intValueCounts) {
+		// Check for regular straight (5 consecutive cards)
+		int intConsecutive = 0;
+		for (int i = 1; i <= 13; i++) {
+			if (intValueCounts[i] == 1) {
+				intConsecutive++;
+				if (intConsecutive == 5) {
+					return true;
+				}
+			} else {
+				intConsecutive = 0;
+			}
+		}
+		
+		// Check for A-2-3-4-5 straight (wheel)
+		if (intValueCounts[1] == 1 && intValueCounts[2] == 1 && intValueCounts[3] == 1 && 
+			intValueCounts[4] == 1 && intValueCounts[5] == 1) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	// Calculate payout based on hand
+	public static int calculatePayout(String strHandType, int intBet) {
+		if (strHandType.equals("Royal Flush")) {
+			return intBet * 800;
+		} else if (strHandType.equals("Straight Flush")) {
+			return intBet * 50;
+		} else if (strHandType.equals("Four of a Kind")) {
+			return intBet * 25;
+		} else if (strHandType.equals("Full House")) {
+			return intBet * 9;
+		} else if (strHandType.equals("Flush")) {
+			return intBet * 6;
+		} else if (strHandType.equals("Straight")) {
+			return intBet * 4;
+		} else if (strHandType.equals("Three of a Kind")) {
+			return intBet * 3;
+		} else if (strHandType.equals("Two Pair")) {
+			return intBet * 2;
+		} else if (strHandType.equals("Pair of Jacks or Better")) {
+			return intBet * 1;
+		} else {
+			return 0; // No payout for low pairs or high card
+		}
+	}
+
+	// 7. UPDATED playOneRound() - Now complete with all features
+	public static int playOneRound(Console con, String strPlayerName, int intMoney) {
+		// Get bet
+		int intBet = getBet(con, strPlayerName, intMoney);
+		
+		// Prepare and deal cards
+		prepareDeck();
+		dealInitialHand();
+		
+		// Show initial hand
+		showInitialHand(con, strPlayerName, intMoney, intBet);
+		
+		// Card swapping
+		swapCards(con, strPlayerName, intMoney, intBet);
+		
+		// Show final hand
+		showFinalHand(con, strPlayerName, intMoney, intBet);
+		
+		// Evaluate hand and calculate payout
+		String strHandType = evaluateHand();
+		int intPayout = calculatePayout(strHandType, intBet);
+		
+		// Show results
+		showResults(con, strHandType, intPayout, intBet);
+		
+		// Return updated money
+		return intMoney - intBet + intPayout;
+	}
+
+	//  Show final hand after swapping
+	public static void showFinalHand(Console con, String strPlayerName, int intMoney, int intBet) {
+		con.clear();
+		con.setDrawColor(Color.BLACK);
+		con.fillRect(0, 0, 1280, 720);
+		con.setDrawColor(Color.WHITE);
+		con.repaint();
+		
+		drawCenteredString(con, "Player: " + strPlayerName, 100);
+		drawCenteredString(con, "Bet: $" + intBet + " | Money: $" + intMoney, 140);
+		
+		con.setDrawColor(Color.CYAN);
+		drawCenteredString(con, "Your Final Hand:", 200);
+		
+		displayHand(con, 220);
+		con.repaint();
+		con.sleep(2000);
+	}
+
+	//  Show game results
+	public static void showResults(Console con, String strHandType, int intPayout, int intBet) {
+		con.clear();
+		con.setDrawColor(Color.BLACK);
+		con.fillRect(0, 0, 1280, 720);
+		con.repaint();
+		
+		// ==================== WIN SCENARIO SCREEN (GAMEPLAY) ====================
+		// Function: celebrates the players win
+		// Input: Nun
+		// Output: Hand type from strHandType variable, payout, profit calculation
+		if (intPayout > 0) {
+			// Win scenario
+			con.setDrawColor(Color.GREEN);
+			drawCenteredString(con, "🎉 WINNER! 🎉", 250);
+			drawCenteredString(con, "Hand: " + strHandType, 300);
+			drawCenteredString(con, "You won: $" + intPayout, 350);
+			drawCenteredString(con, "Profit: $" + (intPayout - intBet), 400);
+			
+			// ==================== LOSE SCENARIO SCREEN (GAMEPLAY) ====================
+			// Input: Nun
+			// Output: Hand type from strHandType variable, lost amount from intBet variable, consolation message
+		} else {
+			// Lose scenario
+			con.setDrawColor(Color.RED);
+			drawCenteredString(con, "😞 No Win 😞", 250);
+			drawCenteredString(con, "Hand: " + strHandType, 300);
+			drawCenteredString(con, "You lost: $" + intBet, 350);
+			drawCenteredString(con, "Better luck next time!", 400);
+		}
+		
+		con.repaint();
+		con.sleep(3000);
 	}
 		
 	// ==================== MAIN GAME METHODS ====================
@@ -189,28 +476,10 @@ public class VickysTools {
 		
 		return intMoney;
 	}
-	
-	// Play one complete round of poker
-	public static int playOneRound(Console con, String strPlayerName, int intMoney) {
-		// Get bet
-		int intBet = getBet(con, strPlayerName, intMoney);
-		
-		// Prepare and deal cards
-		prepareDeck();
-		dealInitialHand();
-		
-		// Show initial hand
-		showInitialHand(con, strPlayerName, intMoney, intBet);
-		
-		// TODO: Add card swapping here
-		// TODO: Add hand evaluation here
-		// TODO: Add payout calculation here
-		
-		// For now, just return money minus bet (you lose)
-		return intMoney - intBet;
-	}
-	
-	// Get valid bet from player
+	// ==================== BETTING SCREEN (GAMEPLAY) ====================  
+	// Function: Allows the player to place their bet for the current round as long as the numer is valid
+	// Input: Bet amount
+	// Output: Player name from strPlayerName variable and current name from intMoney variable
 	public static int getBet(Console con, String strPlayerName, int intMoney) {
 		con.clear();
 		con.setDrawColor(Color.BLACK);
@@ -240,8 +509,10 @@ public class VickysTools {
 		
 		return intBet;
 	}
-	
-	// Show the initial hand dealt
+	// ==================== SCREEN INITIAL HAND DISPLAY (GAMEPLAY) ====================
+	// Function: Show the initial hand dealt
+	// Input: Nun
+	// Output: Cards from intHand[i][0] and inthand[i][1], bet amounts from intBet and money from intMoney
 	public static void showInitialHand(Console con, String strPlayerName, int intMoney, int intBet) {
 		con.clear();
 		con.setDrawColor(Color.BLACK);
@@ -290,7 +561,10 @@ public class VickysTools {
 		con.sleep(3000);
 	}
 	
-	// ==================== MENU SCREEN METHODS ====================
+	// ==================== MENU TUT SCREEN ====================
+	// Function: tells the player all the instructions for poker
+	// Input: Any key
+	// Output: Switches back to main menu screen
 	public static void showHelp(Console con) {
 		con.clear();
 		con.setDrawColor(Color.BLACK);
@@ -323,8 +597,10 @@ public class VickysTools {
 		drawCenteredString(con, "Press any key to return to menu...", 680);
 		con.repaint();
 		
-		con.getChar(); // Wait for any key
+		// Wait for any key
+		con.getChar(); 
 	}
+
 
 	public static void showSecretMenu(Console con) {
 		con.clear();
@@ -337,44 +613,40 @@ public class VickysTools {
 		int intCharWidth = 12;
 
 		// Title line
-		String strTitle = "SECRET JOKE MENU *that I took off a random site :)*";
-		int intTitleWidth = strTitle.length() * intCharWidth;
-		int intTitleX = (1280 - intTitleWidth) / 2;
-		con.drawString(strTitle, intTitleX, 200);
-		
+		drawCenteredString(con, "SECRET JOKE MENU *that I took off a random site *", 200);
+
 		con.setDrawColor(Color.WHITE);
 		// Question line
-		String strQuestion = "What is the biggest difference between a church and a poker room?(wait for ittt)";
-		int intQuestionWidth = strQuestion.length() * intCharWidth;
-		int intQuestionX = (1280 - intQuestionWidth) / 2;
-		con.drawString(strQuestion, intQuestionX, 300);
+		drawCenteredString(con, "What is the biggest difference between a church and a poker room?(sorry in advance)", 300);
+		con.repaint();
 		con.sleep(2000);
 		
 		con.setDrawColor(Color.CYAN);
 		// Answer line
-		String strAnswer = "In a poker room, you really mean it when you pray.";
-		int intAnswerWidth = strAnswer.length() * intCharWidth;
-		int intAnswerX = (1280 - intAnswerWidth) / 2;
-		con.drawString(strAnswer, intAnswerX, 350);
+		drawCenteredString(con, "In a poker room, you really mean it when you pray.", 350);
+		con.repaint();
 		con.sleep(3000);
 		
 		con.setDrawColor(Color.GREEN);
 		// Bonus joke line
-		String strBonus = "It's only a gambling problem when I'm losing.";
-		int intBonusWidth = strBonus.length() * intCharWidth;
-		int intBonusX = (1280 - intBonusWidth) / 2;
-		con.drawString(strBonus, intBonusX, 400);
-		con.sleep(3000);
+		drawCenteredString(con, "Btw its only a gambling problem when ur losing.", 400);
+		con.repaint();
+		con.sleep(1000);
+		
+		con.setDrawColor(Color.BLUE);
+		//DONT TAKE SERIOUSLY 
+		drawCenteredString(con, "BUT GAMBLING IS BAD SO DONT DO IT!!!!", 450);
+		con.repaint();
+		con.sleep(1500);
 		
 		con.setDrawColor(Color.LIGHT_GRAY);
 		// Exit instruction
-		String strExit = "OKay now you can press any key to return...";
-		int intExitWidth = strExit.length() * intCharWidth;
-		int intExitX = (1280 - intExitWidth) / 2;
-		con.drawString(strExit, intExitX, 500);
+		drawCenteredString(con, "OKKKAay now you can press any key to return...", 500);
+
 		
 		con.repaint();
-		con.getChar(); // Wait for any key
+		// Wait for any key to be clicked
+		con.getChar(); 
 	}
 
 	public static void showLeaderboard(Console con) {
@@ -396,7 +668,7 @@ public class VickysTools {
 	}
 
 	public static void updatePlayerMoney(int newMoney) {
-		// update player/ "you"
+		// update player / "you"
 		arrMoney[0] = newMoney; 
 	}
 

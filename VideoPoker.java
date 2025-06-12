@@ -30,7 +30,9 @@ public class VideoPoker {
             }
         }
     }
-    
+    // ==================== SCREEN 1 (MAIN MENU) ====================
+    // Function: Main navigation area and allows users to access all the game features
+    // Input: User key press gives intKey vari
     public static int showMainMenu(Console con) {
         // Clear screen and set background
         con.clear();
@@ -51,7 +53,7 @@ public class VideoPoker {
         con.setDrawColor(Color.YELLOW);
         VickysTools.drawCenteredString(con, "(ENTER) - Play Game", 500);
         VickysTools.drawCenteredString(con, "(V) - View Leaderboard", 530);
-        VickysTools.drawCenteredString(con, "(H) - Help", 560);
+        VickysTools.drawCenteredString(con, "(H) - Recommended tut", 560);
         VickysTools.drawCenteredString(con, "(BACKSPACE) - Quit", 590);
         
         con.repaint();
