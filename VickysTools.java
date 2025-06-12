@@ -407,7 +407,7 @@ public class VickysTools {
 		if (intPayout > 0) {
 			// Win scenario
 			con.setDrawColor(Color.GREEN);
-			drawCenteredString(con, "🎉 WINNER! 🎉", 250);
+			drawCenteredString(con, " WINNER! ", 250);
 			drawCenteredString(con, "Hand: " + strHandType, 300);
 			drawCenteredString(con, "You won: $" + intPayout, 350);
 			drawCenteredString(con, "Profit: $" + (intPayout - intBet), 400);
@@ -418,7 +418,7 @@ public class VickysTools {
 		} else {
 			// Lose scenario
 			con.setDrawColor(Color.RED);
-			drawCenteredString(con, "😞 No Win 😞", 250);
+			drawCenteredString(con, " No Win ", 250);
 			drawCenteredString(con, "Hand: " + strHandType, 300);
 			drawCenteredString(con, "You lost: $" + intBet, 350);
 			drawCenteredString(con, "Better luck next time!", 400);
