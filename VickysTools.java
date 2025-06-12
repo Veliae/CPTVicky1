@@ -617,13 +617,13 @@ public class VickysTools {
 
 		con.setDrawColor(Color.WHITE);
 		// Question line
-		drawCenteredString(con, "What is the biggest difference between a church and a poker room?(sorry in advance)", 300);
+		drawCenteredString(con, "Whats the difference between a large pizza and a poker player?", 300);
 		con.repaint();
 		con.sleep(2000);
 		
 		con.setDrawColor(Color.CYAN);
 		// Answer line
-		drawCenteredString(con, "In a poker room, you really mean it when you pray.", 350);
+		drawCenteredString(con, "A large pizza can feed a family of 4 but a poker player can't ", 350);
 		con.repaint();
 		con.sleep(3000);
 		
